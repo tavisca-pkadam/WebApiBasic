@@ -1,12 +1,10 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:2.2 AS build
+FROM mcr.microsoft.com/dotnet/core/aspnet:2.2
 
 WORKDIR /home_dir
 
-COPY  . ./
+COPY  ./WebApplication2/out/. ./
 
-RUN dotnet publish -c Release -o out 
-
-ENTRYPOINT [ "dotnet", "/home_dir/WebApplication2/out/WebApi.dll" ]
+ENTRYPOINT [ "dotnet", "WebApi.dll" ]
 
 
 
