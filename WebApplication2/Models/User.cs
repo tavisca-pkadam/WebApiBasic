@@ -8,7 +8,7 @@ namespace WebApplication2.Models
     public class User
     {
         public string firstName;
-        public string secondName;
+        public string lastName;
         public string mobileNumber;
         public int age;
     }

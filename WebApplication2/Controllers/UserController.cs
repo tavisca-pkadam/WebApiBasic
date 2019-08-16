@@ -23,7 +23,7 @@ namespace WebApplication2.Controllers
         {
             var user = new User();
             user.firstName = "Pk";
-            user.secondName = "afsd";
+            user.lastName = "afsd";
             user.age = 10;
             user.mobileNumber = "1000";
             return user;
@@ -32,9 +32,6 @@ namespace WebApplication2.Controllers
         [HttpPost]
         public ActionResult<User> PostUser([FromBody] User user)
         {
-            Debug.WriteLine(ModelState);
-            Debug.WriteLine(user.ToString());
-            user.secondName = ModelState.ToString();
             user.firstName = "changed";
             return user;
         }
