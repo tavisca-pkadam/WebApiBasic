@@ -3,4 +3,4 @@ services:
   dotnet-webapi:
     build: .
     ports:
-      - "8081:80"
+      - "0.0.0.0:8085:80"
