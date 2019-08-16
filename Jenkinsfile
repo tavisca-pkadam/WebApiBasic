@@ -16,7 +16,7 @@ pipeline {
     }
     post { 
         always { 
-            sh 'zip -r artifact.zip WebApi/Publish/'
+            sh 'zip -r artifact.zip WebApplication2/Publish/ '
             archiveArtifacts artifacts: 'artifact.zip'
         }
     }
