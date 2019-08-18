@@ -3,7 +3,7 @@ pipeline {
     agent any
 
     parameters {
-        string(name:"SOLUTION_NAME", defaultValue:"WebApi", description: "Solution Name")
+        string(name:"SOLUTION_NAME", defaultValue:"WebApi.sln", description: "Solution Name")
         text(name:"TEST_PROJ_PATH", defaultValue:"", description: "Test Project Path To .csproj file")
         booleanParam(name: 'BUILD', defaultValue: false, description: 'Check To Build')
         booleanParam(name: 'TEST', defaultValue: false, description: 'Check To Test')
@@ -18,7 +18,7 @@ pipeline {
             }
             steps {
                 echo 'Build'
-                sh 'dotnet build ${params.SOLUTION_NAME}.sln'
+                ps 'dotnet build ${params.SOLUTION_NAME}'
             }
         }
 
@@ -27,7 +27,7 @@ pipeline {
                 expression { return params.PUBLISH }
             }
             steps {
-                sh 'dotnet publish ${params.SOLUTION_NAME}.sln -p:Configuration=release -v:q -o ../artifacts'
+                ps 'dotnet publish ${params.SOLUTION_NAME} -p:Configuration=release -v:q -o ../artifacts'
             }
         }
     }
