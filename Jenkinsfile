@@ -18,7 +18,7 @@ pipeline {
             }
             steps {
                 echo 'Build'
-                ps 'dotnet build ${params.SOLUTION_NAME}'
+                bat 'dotnet build $SOLUTION_NAME$'
             }
         }
 
@@ -27,7 +27,7 @@ pipeline {
                 expression { return params.PUBLISH }
             }
             steps {
-                ps 'dotnet publish ${params.SOLUTION_NAME} -p:Configuration=release -v:q -o ../artifacts'
+                bat 'dotnet publish $SOLUTION_NAME$ -p:Configuration=release -v:q -o ../artifacts'
             }
         }
     }
