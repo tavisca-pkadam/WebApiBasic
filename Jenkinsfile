@@ -17,7 +17,7 @@ pipeline {
                 expression { params.BUILD || params.PUBLISH || params.TEST}
             }
             steps {
-                bat '''dotnet build $SOLUTION_NAME$'''
+                bat '''dotnet build WebApi.sln'''
             }
         }
 
