@@ -23,10 +23,19 @@ pipeline {
 
         stage('publish') {
              when {
-                expression { return params.PUBLISH }
+                expression { return params.PUBLISH || params.DEPLOY }
             }
             steps {
                 bat '''dotnet publish %SOLUTION_NAME% -p:Configuration=release -v:q -o ../artifacts'''
+            }
+        }
+
+        stage('deploy') {
+            when {
+                expression {return params.DEPLOY}
+            }
+            steps {
+                bat
             }
         }
     }

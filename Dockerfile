@@ -1,10 +1,12 @@
 FROM mcr.microsoft.com/dotnet/core/aspnet:2.2
 
+ENV SOLUTION_DLL="WebApi.dll"
+
 WORKDIR /home_dir
 
-COPY  ./WebApplication2/out/. ./
+COPY  ./artifacts/. ./
 
-ENTRYPOINT [ "dotnet", "WebApi.dll" ]
+ENTRYPOINT [ "dotnet", ${SOLUTION_DLL} ]
 
 
 
