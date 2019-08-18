@@ -4,7 +4,10 @@ pipeline {
 
     parameters {
         string(name:"SOLUTION_NAME", defaultValue:"WebApi.sln", description: "Solution Name")
+        string(name:"SOLUTION_DLL", defaultValue:"WebApi.dll", description: "Solution Name")
+
         text(name:"TEST_PROJ_PATH", defaultValue:"", description: "Test Project Path To .csproj file")
+        string(name:"PORT_NO", defaultValue:"8989", description: "Bind Port Number")
         booleanParam(name: 'BUILD', defaultValue: false, description: 'Check To Build')
         booleanParam(name: 'TEST', defaultValue: false, description: 'Check To Test')
         booleanParam(name: 'PUBLISH', defaultValue: false, description: 'Check To Publish')
@@ -35,7 +38,7 @@ pipeline {
                 expression {return params.DEPLOY}
             }
             steps {
-                bat
+                bat ''' docker run -p %PORT_NO%:80 -e SOLUTION_DLL=%SOLUTION_DLL% webapplication2_dotnet-webapi'''
             }
         }
     }
