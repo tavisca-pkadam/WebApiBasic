@@ -10,6 +10,7 @@ pipeline {
 
         text(name:"TEST_PROJ_PATH", defaultValue:"", description: "Test Project Path To .csproj file")
         string(name:"PORT_NO", defaultValue:"8989", description: "Bind Port Number")
+
         booleanParam(name: 'BUILD', defaultValue: false, description: 'Check To Build')
         booleanParam(name: 'TEST', defaultValue: false, description: 'Check To Test')
         booleanParam(name: 'PUBLISH', defaultValue: false, description: 'Check To Publish')
@@ -64,7 +65,7 @@ pipeline {
             }
             steps{
                 echo 'run the image'
-                bat 'docker run -p %PORT_NO%:55031 -e SOLUTION_DLL=%SOLUTION_DLL%  %DOCKER_IMAGE_NAME%'
+                bat 'docker run -p %PORT_NO%:80 -e SOLUTION_DLL=%SOLUTION_DLL%  %DOCKER_IMAGE_NAME%'
             }
         }
 
