@@ -6,7 +6,7 @@ pipeline {
         string(name:"SOLUTION_NAME", defaultValue:"WebApi.sln", description: "Solution Name")
         string(name:"SOLUTION_DLL", defaultValue:"WebApi.dll", description: "Solution Name")
 
-        string(name:"DOCKER_IMAGE_NAME", defaultValue:"webappliation_api", description: "Docker Image Name")
+        string(name:"DOCKER_IMAGE_NAME", defaultValue:"aspcore_webapplication", description: "Docker Image Name")
 
         text(name:"TEST_PROJ_PATH", defaultValue:"", description: "Test Project Path To .csproj file")
         string(name:"PORT_NO", defaultValue:"8989", description: "Bind Port Number")
@@ -41,11 +41,11 @@ pipeline {
                 expression { return params.SONAR_ANALYSIS }
             }
             steps {
-                bat '''
-                        dotnet C:\Users\pakadam\Downloads\CodeJam\sonar-scanner-msbuild-4.6.2.2108-netcoreapp2.0\SonarScanner.MSBuild.dll begin /k:"cartingApp" /d:sonar.host.url="http://localhost:10100"  /d:sonar.login="5d44d8322a7ad225ff08a0d85ecc43df60958d01"
-                        dotnet build
-                        dotnet C:\Users\pakadam\Downloads\CodeJam\sonar-scanner-msbuild-4.6.2.2108-netcoreapp2.0\SonarScanner.MSBuild.dll end  /d:sonar.login="5d44d8322a7ad225ff08a0d85ecc43df60958d01"           
-                    '''
+                // bat '''
+                //         dotnet C:\Users\pakadam\Downloads\CodeJam\sonar-scanner-msbuild-4.6.2.2108-netcoreapp2.0\SonarScanner.MSBuild.dll begin /k:"cartingApp" /d:sonar.host.url="http://localhost:10100"  /d:sonar.login="5d44d8322a7ad225ff08a0d85ecc43df60958d01"
+                //         dotnet build
+                //         dotnet C:\Users\pakadam\Downloads\CodeJam\sonar-scanner-msbuild-4.6.2.2108-netcoreapp2.0\SonarScanner.MSBuild.dll end  /d:sonar.login="5d44d8322a7ad225ff08a0d85ecc43df60958d01"           
+                //     '''
             }
         }
 
@@ -65,7 +65,7 @@ pipeline {
                         docker push subtleparesh/%DOCKER_IMAGE_NAME%:latest'''
             }
         }
-
+`
          stage('run docker image'){
             steps{
                 echo 'run the image'
