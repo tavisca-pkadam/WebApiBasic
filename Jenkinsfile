@@ -40,7 +40,7 @@ pipeline {
             }
         }
 
-        stage('publish') {
+        stage('sonar') {
              when {
                 expression { return params.SONAR_ANALYSIS}
             }
