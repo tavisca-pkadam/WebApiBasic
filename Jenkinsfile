@@ -15,6 +15,9 @@ pipeline {
         booleanParam(name: 'PUBLISH', defaultValue: false, description: 'Check To Publish')
         booleanParam(name: 'DEPLOY', defaultValue: false, description: 'Check To Deploy')
         booleanParam(name: 'SONAR_ANALYSIS', defaultValue: false, description: 'Check To Sonar Analysis')
+        booleanParam(name: 'DOCKER_BUILD', defaultValue: false, description: 'Check To DOCKER_BUILD')
+        booleanParam(name: 'DOCKER_HUB_PUBLISH', defaultValue: false, description: 'Check To DOCKER_HUB_PUBLISH')
+        booleanParam(name: 'DOCKER_RUN', defaultValue: false, description: 'Check To DOCKER_RUN')
     }
 
     stages {
@@ -38,7 +41,9 @@ pipeline {
 
 
          stage('Docker build') {
-            
+            when {
+                  expression {return params.DOCKER_BUILD}
+            }
              steps{
                 bat 'docker build -t %DOCKER_IMAGE_NAME% .'
              }
@@ -46,7 +51,7 @@ pipeline {
 
         stage('UpdateDockerRepo') {
             when {
-                  expression {return params.DEPLOY}
+                  expression {return params.DOCKER_HUB_PUBLISH}
             }
             steps {
                 bat ''' docker tag %DOCKER_IMAGE_NAME%:latest subtleparesh/%DOCKER_IMAGE_NAME% 
@@ -54,6 +59,9 @@ pipeline {
             }
         }
          stage('run docker image'){
+             when {
+                  expression {return params.DOCKER_RUN}
+            }
             steps{
                 echo 'run the image'
                 bat 'docker run -p %PORT_NO%:55031 -e SOLUTION_DLL=%SOLUTION_DLL%  %DOCKER_IMAGE_NAME%'
