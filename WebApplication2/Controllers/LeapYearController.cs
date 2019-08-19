@@ -10,11 +10,6 @@ namespace WebApplication2
     [Route("/api/leapyear")]
     public class LeapYearController : Controller
     {
-        // GET: LeapYear
-        public ActionResult Index()
-        {
-            return View();
-        }
 
         // GET: LeapYear/Details/5
         [HttpGet("{id}")]
