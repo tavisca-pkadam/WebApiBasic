@@ -48,10 +48,10 @@ pipeline {
             }
             steps{
                 bat """
-                    dotnet ${SONAR_MS_TOOL}  begin /k:"%SONAR_PROJECT_NAME%" /d:sonar.host.url=${SONAR_URL}  /d:sonar.login="${SONAR_TOKEN}"
-                    dotnet  build
-                    dotnet ${SONAR_MS_TOOL} end  /d:sonar.login="${SONAR_TOKEN}"
-               """
+                        dotnet ${SONAR_MS_TOOL}  begin /k:"%SONAR_PROJECT_NAME%" /d:sonar.host.url=${SONAR_URL}  /d:sonar.login="${SONAR_TOKEN}"
+                        dotnet  build
+                        dotnet ${SONAR_MS_TOOL} end  /d:sonar.login="${SONAR_TOKEN}"
+                    """
             }     
         }
 
