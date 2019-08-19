@@ -40,6 +40,20 @@ pipeline {
             }
         }
 
+        stage('publish') {
+             when {
+                expression { return params.SONAR_ANALYSIS}
+            }
+            steps{
+                script {
+                  scannerHome = tool 'sonar_local'
+                }
+                withSonarQubeEnv('SonarQube Scanner') {
+                  bat "%scannerHome%/bin/sonar-scanner"
+                }
+            }     
+        }
+
 
          stage('Docker build') {
             when {
