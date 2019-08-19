@@ -8,7 +8,7 @@ pipeline {
 
         string(name:"SONAR_PROJECT_NAME", defaultValue:"WebApi", description: "Solution Name")
 
-        string(name:"DOCKER_IMAGE_NAME", defaultValue:"aspcore_webapplication", description: "Docker Image Name")
+        string(name:"DOCKER_IMAGE_NAME", defaultValue:"aspcore_web", description: "Docker Image Name")
 
         text(name:"TEST_PROJ_PATH", defaultValue:"", description: "Test Project Path To .csproj file")
         string(name:"PORT_NO", defaultValue:"8989", description: "Bind Port Number")
@@ -16,7 +16,6 @@ pipeline {
         booleanParam(name: 'BUILD', defaultValue: false, description: 'Check To Build')
         booleanParam(name: 'TEST', defaultValue: false, description: 'Check To Test')
         booleanParam(name: 'PUBLISH', defaultValue: false, description: 'Check To Publish')
-        booleanParam(name: 'DEPLOY', defaultValue: false, description: 'Check To Deploy')
         booleanParam(name: 'SONAR_ANALYSIS', defaultValue: false, description: 'Check To Sonar Analysis')
         booleanParam(name: 'DOCKER_BUILD', defaultValue: false, description: 'Check To DOCKER_BUILD')
         booleanParam(name: 'DOCKER_HUB_PUBLISH', defaultValue: false, description: 'Check To DOCKER_HUB_PUBLISH')
@@ -41,6 +40,8 @@ pipeline {
                 bat '''dotnet publish %SOLUTION_NAME% -p:Configuration=release -v:q -o ../artifacts'''
             }
         }
+
+        
 
         stage('sonar') {
              when {
