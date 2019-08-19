@@ -64,7 +64,7 @@ pipeline {
                 script {
                   scannerHome = tool 'sonar_ms'
                 }
-                withSonarQubeEnv('sonar_qube') {
+                withSonarQubeEnv('sonar_local') {
                   bat "%scannerHome%/bin/sonar-scanner"
                 }
             }     
