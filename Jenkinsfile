@@ -6,7 +6,7 @@ pipeline {
         string(name:"SOLUTION_NAME", defaultValue:"WebApi.sln", description: "Solution Name")
         string(name:"SOLUTION_DLL", defaultValue:"WebApi.dll", description: "Solution Name")
 
-        string(name:"SONAR_PROJECT_NAME", defaultValue:"WebApp", description: "Solution Name")
+        string(name:"SONAR_PROJECT_NAME", defaultValue:"WebApi", description: "Solution Name")
 
         string(name:"DOCKER_IMAGE_NAME", defaultValue:"aspcore_webapplication", description: "Docker Image Name")
 
@@ -48,7 +48,7 @@ pipeline {
             }
             steps{
                 bat '''   
-                    dotnet C:\\Users\\pakadam\\Downloads\\CodeJam\\sonar-scanner-msbuild-4.6.2.2108-netcoreapp2.0\\SonarScanner.MSBuild.dll begin /k:"WebApi" /d:sonar.host.url="http://localhost:10100"  /d:sonar.login="5d44d8322a7ad225ff08a0d85ecc43df60958d01"
+                    dotnet C:\\Users\\pakadam\\Downloads\\CodeJam\\sonar-scanner-msbuild-4.6.2.2108-netcoreapp2.0\\SonarScanner.MSBuild.dll begin /k:"%SONAR_PROJECT_NAME%" /d:sonar.host.url="http://localhost:10100"  /d:sonar.login="5d44d8322a7ad225ff08a0d85ecc43df60958d01"
                     dotnet  build
                     dotnet C:\\Users\\pakadam\\Downloads\\CodeJam\\sonar-scanner-msbuild-4.6.2.2108-netcoreapp2.0\\SonarScanner.MSBuild.dll end  /d:sonar.login="5d44d8322a7ad225ff08a0d85ecc43df60958d01"
                 '''
