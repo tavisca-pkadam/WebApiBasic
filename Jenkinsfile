@@ -52,12 +52,21 @@ pipeline {
                     dotnet  build
                     dotnet C:\\Users\\pakadam\\Downloads\\CodeJam\\sonar-scanner-msbuild-4.6.2.2108-netcoreapp2.0\\SonarScanner.MSBuild.dll end  /d:sonar.login="5d44d8322a7ad225ff08a0d85ecc43df60958d01"
                 '''
-                // script {
-                //   scannerHome = tool 'sonar_local'
-                // }
-                // withSonarQubeEnv('SonarQube Scanner') {
-                //   bat "%scannerHome%/bin/sonar-scanner"
-                // }
+            }     
+        }
+
+        stage('sonar') {
+             when {
+                expression { return params.SONAR_ANALYSIS}
+            }
+            steps{
+                
+                script {
+                  scannerHome = tool 'sonar'
+                }
+                withSonarQubeEnv('SonarQube Scanner') {
+                  bat "%scannerHome%/bin/sonar-scanner"
+                }
             }     
         }
 
