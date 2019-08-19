@@ -55,16 +55,16 @@ pipeline {
             }     
         }
 
-        stage('sonar') {
+        stage('sonar_plugin') {
              when {
                 expression { return params.SONAR_ANALYSIS}
             }
             steps{
                 
                 script {
-                  scannerHome = tool 'sonar'
+                  scannerHome = tool 'sonar_ms'
                 }
-                withSonarQubeEnv('SonarQube Scanner') {
+                withSonarQubeEnv('sonar_qube') {
                   bat "%scannerHome%/bin/sonar-scanner"
                 }
             }     
