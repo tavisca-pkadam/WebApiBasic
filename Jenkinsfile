@@ -53,7 +53,6 @@ pipeline {
                         docker push subtleparesh/%DOCKER_IMAGE_NAME%:latest'''
             }
         }
-`
          stage('run docker image'){
             steps{
                 echo 'run the image'
