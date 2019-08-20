@@ -7,4 +7,3 @@ WORKDIR /home_dir
 COPY  ./artifacts/. .
 
 ENTRYPOINT dotnet ${SOLUTION_DLL}
-

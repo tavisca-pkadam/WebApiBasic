@@ -14,9 +14,9 @@ pipeline {
         string(name:"PORT_NO", defaultValue:"8989", description: "Bind Port Number")
 
         booleanParam(name: 'BUILD', defaultValue: false, description: 'Check To Build')
-        booleanParam(name: 'TEST', defaultValue: false, description: 'Check To Test')
-        booleanParam(name: 'PUBLISH', defaultValue: false, description: 'Check To Publish')
         booleanParam(name: 'SONAR_ANALYSIS', defaultValue: false, description: 'Check To Sonar Analysis')
+        // booleanParam(name: 'TEST', defaultValue: false, description: 'Check To Test')
+        booleanParam(name: 'PUBLISH', defaultValue: false, description: 'Check To Publish')
         booleanParam(name: 'DOCKER_BUILD', defaultValue: false, description: 'Check To DOCKER_BUILD')
         booleanParam(name: 'DOCKER_HUB_PUBLISH', defaultValue: false, description: 'Check To DOCKER_HUB_PUBLISH')
         booleanParam(name: 'DOCKER_RUN', defaultValue: false, description: 'Check To DOCKER_RUN')
@@ -32,17 +32,7 @@ pipeline {
             }
         }
 
-        stage('publish') {
-             when {
-                expression { return params.PUBLISH || params.DEPLOY }
-            }
-            steps {
-                bat '''dotnet publish %SOLUTION_NAME% -p:Configuration=release -v:q -o ../artifacts'''
-            }
-        }
-
         
-
         stage('sonar') {
              when {
                 expression { return params.SONAR_ANALYSIS}
@@ -55,6 +45,18 @@ pipeline {
                     """
             }     
         }
+
+        stage('publish') {
+             when {
+                expression { return params.PUBLISH || params.DEPLOY }
+            }
+            steps {
+                bat '''dotnet publish %SOLUTION_NAME% -p:Configuration=release -v:q -o ../artifacts'''
+            }
+        }
+
+        
+
 
          stage('Docker build') {
             when {
@@ -69,9 +71,16 @@ pipeline {
             when {
                   expression {return params.DOCKER_HUB_PUBLISH}
             }
+            
             steps {
-                bat ''' docker tag %DOCKER_IMAGE_NAME%:latest subtleparesh/%DOCKER_IMAGE_NAME% 
+             script{
+                    docker.withRegistry('','docker_creds')
+                    {
+                        
+                         bat ''' docker tag %DOCKER_IMAGE_NAME%:latest subtleparesh/%DOCKER_IMAGE_NAME% 
                         docker push subtleparesh/%DOCKER_IMAGE_NAME%:latest'''
+                    }
+                }
             }
         }
          stage('run docker image'){
