@@ -9,33 +9,43 @@ pipeline {
         string(name:"SONAR_PROJECT_NAME", defaultValue:"WebApi", description: "Solution Name")
 
         string(name:"DOCKER_IMAGE_NAME", defaultValue:"aspcore_web", description: "Docker Image Name")
+        string(name:"DOCKER_REGISTRY", defaultValue:"subtleparesh", description: "Docker Registry Name")
+        string(name:"DOCKER_TAG", defaultValue:"latest", description: "Docker Image Tag")
 
         text(name:"TEST_PROJ_PATH", defaultValue:"", description: "Test Project Path To .csproj file")
-        string(name:"PORT_NO", defaultValue:"8989", description: "Bind Port Number")
+        string(name:"HOST_PORT_NO", defaultValue:"8989", description: "Host Bind Port Number")
+        string(name:"CONTAINER_PORT_NO", defaultValue:"80", description: "Conatainer Port Number")
+
 
         booleanParam(name: 'BUILD', defaultValue: false, description: 'Check To Build')
         booleanParam(name: 'SONAR_ANALYSIS', defaultValue: false, description: 'Check To Sonar Analysis')
-        // booleanParam(name: 'TEST', defaultValue: false, description: 'Check To Test')
+        booleanParam(name: 'TEST', defaultValue: false, description: 'Check To Test')
         booleanParam(name: 'PUBLISH', defaultValue: false, description: 'Check To Publish')
         booleanParam(name: 'DOCKER_BUILD', defaultValue: false, description: 'Check To DOCKER_BUILD')
-        booleanParam(name: 'DOCKER_HUB_PUBLISH', defaultValue: false, description: 'Check To DOCKER_HUB_PUBLISH')
-        booleanParam(name: 'DOCKER_RUN', defaultValue: false, description: 'Check To DOCKER_RUN')
+        booleanParam(name: 'DOCKER_PUBLISH', defaultValue: false, description: 'Check To DOCKER_HUB_PUBLISH')
     }
 
     stages {
-        stage('build') {
+        stage('BUILD') {
             when {
-                expression { params.BUILD || params.PUBLISH || params.TEST}
+                expression { params.BUILD}
             }
             steps {
                 bat '''dotnet build %SOLUTION_NAME%'''
             }
         }
-
+        stage('TEST') {
+            when {
+                expression { params.BUILD}
+            }
+            steps {
+                bat '''dotnet test %SOLUTION_NAME%'''
+            }
+        }
         
-        stage('sonar') {
+        stage('SONAR ANALYSIS') {
              when {
-                expression { return params.SONAR_ANALYSIS}
+                expression {  params.SONAR_ANALYSIS }
             }
             steps{
                 bat """
@@ -46,54 +56,63 @@ pipeline {
             }     
         }
 
-        stage('publish') {
+        stage('PUBLISH') {
              when {
-                expression { return params.PUBLISH || params.DEPLOY }
+                expression {  params.PUBLISH}
             }
             steps {
                 bat '''dotnet publish %SOLUTION_NAME% -p:Configuration=release -v:q -o ../artifacts'''
             }
         }
 
-        
-
-
-         stage('Docker build') {
+         stage('DOCKER BUILD IMAGE') {
             when {
-                  expression {return params.DOCKER_BUILD}
+                  expression { params.DOCKER_BUILD}
             }
              steps{
                 bat 'docker build -t %DOCKER_IMAGE_NAME% .'
              }
         }
 
-        stage('UpdateDockerRepo') {
+        stage('DOCKER TAG & PUSH IMAGE') {
             when {
-                  expression {return params.DOCKER_HUB_PUBLISH}
+                  expression { params.DOCKER_PUBLISH}
             }
             
             steps {
              script{
                     docker.withRegistry('','docker_creds')
                     {
-                        
-                         bat ''' docker tag %DOCKER_IMAGE_NAME%:latest subtleparesh/%DOCKER_IMAGE_NAME% 
-                        docker push subtleparesh/%DOCKER_IMAGE_NAME%:latest'''
+                         bat ''' 
+                                docker tag %DOCKER_IMAGE_NAME%:%DOCKER_TAG% %DOCKER_REGISTRY%/%DOCKER_IMAGE_NAME% 
+                                docker push %DOCKER_REGISTRY%/%DOCKER_IMAGE_NAME%:%DOCKER_TAG%
+                            '''
                     }
                 }
             }
         }
-         stage('run docker image'){
-             when {
-                  expression {return params.DOCKER_RUN}
-            }
+         stage('REMOVE LOCAL DOCKER IMAGE')
+        {
             steps{
-                echo 'run the image'
-                bat 'docker run -p %PORT_NO%:80 -e SOLUTION_DLL=%SOLUTION_DLL%  %DOCKER_IMAGE_NAME%'
+                    powershell 'docker rmi  %DOCKER_IMAGE_NAME%'
             }
         }
-
-        
+         stage('PULL DOCKER IMAGE')
+        {
+            steps{
+                    powershell 'docker pull %DOCKER_REGISTRY%/%DOCKER_IMAGE_NAME%:%DOCKER_TAG%'
+            }
+        }
+         stage('DEPLOY DOCKER IMAGE'){
+            steps{
+                bat 'docker run -p %HOST_PORT_NO%:%CONTAINER_PORT_NO% -e SOLUTION_DLL=%SOLUTION_DLL%  %DOCKER_IMAGE_NAME%'
+            }
+        }
     }
+     post{
+	     always{
+		     deleteDir()
+	  	}
+	}
   
 }
